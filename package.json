@@ -1,7 +1,7 @@
 {
-  "name": "google-books-search",
+  "name": "mern",
   "version": "1.0.0",
-  "description": "Google Books Search React Homework",
+  "description": "",
   "main": "server.js",
   "scripts": {
     "start": "if-env NODE_ENV=production && npm run start:prod || npm run start:dev",
@@ -20,9 +20,9 @@
     "nodemon": "^1.18.7"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "express": "^4.16.3",
-    "if-env": "^1.0.4",
-    "mongoose": "^5.8.11",
-    "react-router-dom": "^5.2.0"
+    "mongoose": "^5.3.16",
+    "if-env": "^1.0.4"
   }
 }

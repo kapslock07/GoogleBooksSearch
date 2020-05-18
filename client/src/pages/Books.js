@@ -64,11 +64,11 @@ function Books() {
           <form>
             <Input
               onChange={handleInputChange}
-              name="searchbox"
-              placeholder="Enter the Name of a Book"
+              name="title"
+              placeholder="Enter the Title of a Book"
             />
             <FormBtn
-              disabled={!(formObject.author && formObject.title)}
+              disabled={!(formObject.title)}
               onClick={handleFormSubmit}
             >
               Search for Book

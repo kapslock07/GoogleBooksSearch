@@ -4,12 +4,12 @@ const Schema = mongoose.Schema;
 const bookSchema = new Schema({
   title: {
     type: String,
-    required: true
+    required: true,
   },
   // url string for thumbnail image
   authors: {
     type: String,
-    required: true
+    required: true,
   },
   // url for recipe web page - unique index
   description: {
@@ -18,13 +18,13 @@ const bookSchema = new Schema({
 
   image: {
     type: String,
-    default: ""
+    default: "",
   },
 
   link: {
     type: String,
     default: "",
-    unique: true
+    unique: true,
   },
 });
 

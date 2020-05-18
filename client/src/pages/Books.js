@@ -9,50 +9,66 @@ import { Input, FormBtn } from "../components/Form";
 
 function Books() {
   // Setting our component's initial state
-  const [books, setBooks] = useState([])
-  const [formObject, setFormObject] = useState({})
+  const [books, setBooks] = useState([]);
+  const [search, setSearch] = useState("");
 
   // Load all books and store them with setBooks
-  useEffect(() => {
-    loadBooks()
-  }, [])
+  // useEffect(() => {
+  //   loadBooks();
+  // }, []);
 
-  // Loads all books and sets them to books
-  function loadBooks() {
-    API.getBooks()
-      .then(res =>
-        setBooks(res.data)
-      )
-      .catch(err => console.log(err));
-  };
+  // // Loads all books and sets them to books
+  // function loadBooks() {
+  //   API.getBooks()
+  //     .then((res) => setBooks(res.data))
+  //     .catch((err) => console.log(err));
+  // }
 
   // Deletes a book from the database with a given id, then reloads books from the db
   function deleteBook(id) {
     API.deleteBook(id)
-      .then(res => loadBooks())
-      .catch(err => console.log(err));
+      .then((res) => loadBooks())
+      .catch((err) => console.log(err));
   }
 
   // Handles updating component state when the user types into the input field
   function handleInputChange(event) {
-    const { name, value } = event.target;
-    setFormObject({ ...formObject, [name]: value })
-  };
+    //const { name, value } = event.target;
+    //setFormObject({ ...formObject, [name]: value })
+
+    setSearch(event.target.value);
+  }
 
   // When the form is submitted, use the API.saveBook method to save the book data
   // Then reload books from the database
-  function handleFormSubmit(event) {
+
+  function saveTheBook(event) {
     event.preventDefault();
     if (formObject.title && formObject.author) {
-      API.saveBook({
-        title: formObject.title,
-        author: formObject.author,
-        synopsis: formObject.synopsis
-      })
-        .then(res => loadBooks())
-        .catch(err => console.log(err));
+      API.saveBook()
+        .then((res) => loadBooks())
+        .catch((err) => console.log(err));
     }
-  };
+
+    //clear results/search
+    //redirect to saved page
+  }
+  function handleFormSubmit(event) {
+    event.preventDefault();
+    API.searchBooks(search)
+      .then((res) => {
+        const mappedBooks = res.data.items.map((book) => ({
+          title: book.volumeInfo.title,
+          authors: book.volumeInfo.authors.join(", "),
+          description: book.volumeInfo.description,
+          image: book.volumeInfo.imageLinks.smallThumbnail,
+          link: book.volumeInfo.infoLink,
+        }));
+        setBooks(mappedBooks);
+      })
+      //.then((res) => setBooks(res.data))
+      .catch((err) => console.log(err));
+  }
 
   return (
     <Container fluid>
@@ -63,41 +79,42 @@ function Books() {
           </Jumbotron>
           <form>
             <Input
-              onChange={handleInputChange}
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
               name="title"
               placeholder="Enter the Title of a Book"
             />
-            <FormBtn
-              disabled={!(formObject.title)}
-              onClick={handleFormSubmit}
-            >
+            <FormBtn disabled={!search} onClick={handleFormSubmit}>
               Search for Book
-              </FormBtn>
+            </FormBtn>
           </form>
         </Col>
         <Col size="md-6 sm-12">
-
           {books.length ? (
             <List>
-              {books.map(book => (
-                <ListItem key={book._id}>
+              {books.map((book, i) => (
+                <ListItem key={i}>
                   <Link to={"/books/" + book._id}>
                     <strong>
-                      {book.title} by {book.author}
+                      {book.title} by {book.authors}
                     </strong>
                   </Link>
+                  <img src={book.image} />
                   <DeleteBtn onClick={() => deleteBook(book._id)} />
+                  {/* <button onClick={() => saveTheBook(book)}>save</button> */}
+                  <button onClick={(event) => saveTheBook(event, book)}>
+                    save
+                  </button>
                 </ListItem>
               ))}
             </List>
           ) : (
-              <h3>No Results to Display</h3>
-            )}
+            <h3>No Results to Display</h3>
+          )}
         </Col>
       </Row>
     </Container>
   );
 }
-
 
 export default Books;

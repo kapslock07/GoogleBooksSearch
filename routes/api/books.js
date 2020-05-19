@@ -2,8 +2,10 @@ const router = require("express").Router();
 const booksController = require("../../controllers/booksController");
 
 // Matches with "/api/books"
-router.route("/")
-  .get(booksController.findAll)
+router.route("/books")
+  .post(booksController.create)
+  .get(booksController.findAll);
+
 
 // Matches with "/api/saved"
 router.route("/saved")

@@ -2,33 +2,33 @@ import React, { useState, useEffect } from "react";
 import DeleteBtn from "../components/DeleteBtn";
 import Jumbotron from "../components/Jumbotron";
 import API from "../utils/API";
-import { Link } from "react-router-dom";
 import { Col, Row, Container } from "../components/Grid";
 import { List, ListItem } from "../components/List";
 
 function Saved() {
   // Setting our component's initial state
-  const [books, setBooks] = useState([]);
+  const [savedBooks, setSavedBooks] = useState([]);
 
   // Load all books and store them with setBooks
   useEffect(() => {
-    loadBooks();
+    loadSavedBooks();
   }, []);
 
   // Loads all books and sets them to books
-  function loadBooks() {
+  function loadSavedBooks() {
     API.getBooks()
       .then((res) => {
         console.log(res);
-        setBooks(res.data);
+        setSavedBooks(res.data);
       })
       .catch((err) => console.log(err));
   }
 
+
   // Deletes a book from the database with a given id, then reloads books from the db
   function deleteBook(id) {
     API.deleteBook(id)
-      .then((res) => loadBooks())
+      .then((res) => loadSavedBooks())
       .catch((err) => console.log(err));
   }
 
@@ -41,22 +41,27 @@ function Saved() {
           </Jumbotron>
         </Col>
         <Col size="md-6 sm-12">
-          {books.length ? (
+          {savedBooks.length ? (
             <List>
-              {books.map((book) => (
-                <ListItem key={book._id}>
-                  <Link to={"/books/" + book._id}>
+              {savedBooks.map((book, i) => (
+                <ListItem key={i}>
+                  <a href={book.link}>
                     <strong>
-                      {book.title} by {book.author}
+                      {book.title}
                     </strong>
-                  </Link>
+                    <p> by {book.authors}</p>
+                    <img src={book.image} alt="book" />
+                  </a>
+                  <p>{book.description}</p>
                   <DeleteBtn onClick={() => deleteBook(book._id)} />
+                  {/* <button onClick={() => saveTheBook(book)}>save</button> */}
+
                 </ListItem>
               ))}
             </List>
           ) : (
-            <h3>No Results to Display</h3>
-          )}
+              <h3>No Results to Display</h3>
+            )}
         </Col>
       </Row>
     </Container>
